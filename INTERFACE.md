@@ -8,3 +8,7 @@
 4. status ? 
 5. date ?
 6. invoke comments ?
+
+
+## DB SCHEMA 
+1. fake_posts_lists => post type, post_id, attachment_id, date_time, author

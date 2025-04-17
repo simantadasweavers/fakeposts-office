@@ -32,12 +32,14 @@ function fke_post_enqueue_assets()
     wp_enqueue_style('fke_post-bootstrap-css', plugins_url('assets/css/bootstrap.min.css', __FILE__), [], '1.0.0');
     wp_enqueue_style('fke_post-custom-css', plugins_url('assets/css/custom.css', __FILE__), [], '1.0.0');
     wp_enqueue_style('fke_post-style-css', plugins_url('assets/css/style.css', __FILE__), [], '1.0.0');
+    wp_enqueue_style('fke_post-jquery-ui-css', plugins_url('assets/css/jquery-ui.css', __FILE__), [], '1.0.0');
 
     // Enqueue Scripts
     wp_enqueue_script('jquery');
+    wp_enqueue_script('fke_post-jquery-ui-js', plugins_url('assets/js/jquery-ui.js', __FILE__), ['jquery'], '1.0.0', true);
     wp_enqueue_script('fke_post-bootstrap-bundle-js', plugins_url('assets/js/bootstrap.bundle.min.js', __FILE__), ['jquery'], '1.0.0', true);
     wp_enqueue_script('fke_post-script-js', plugins_url('assets/js/script.js', __FILE__), ['jquery'], '1.0.0', true);
-
+    
     // Pass AJAX URL to scripts
     wp_localize_script('fke_post-script-js', 'fke_post_ajax', [ 'ajax_url' => admin_url('admin-ajax.php') ]);
 }
