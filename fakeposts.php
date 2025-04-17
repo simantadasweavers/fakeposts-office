@@ -23,56 +23,51 @@ require_once 'functions.php';
 /**
  * Enqueue plugin assets (CSS & JS)
  */
-function mc_bot_enqueue_assets()
+function fke_post_enqueue_assets()
 {
     // Enqueue Styles
-    wp_enqueue_style('mc_bot-material-icons-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0', [], null);
-    wp_enqueue_style('mc_bot-material-icons-rounded', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0', [], null);
-    wp_enqueue_style('mc_bot-bootstrap-icons-css', "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css", [], '1.0.0');
-    wp_enqueue_style('mc_bot-bootstrap-css', plugins_url('assets/css/bootstrap.min.css', __FILE__), [], '1.0.0');
-    wp_enqueue_style('mc_bot-custom-css', plugins_url('assets/css/custom.css', __FILE__), [], '1.0.0');
-    wp_enqueue_style('mc_bot-datatables-css', plugins_url('assets/DataTables/datatables.min.css', __FILE__), [], '1.0.0');
-    wp_enqueue_style('mc_bot-summernote-css', plugins_url('assets/summernote/summernote.css', __FILE__), [], '1.0.0');
-    wp_enqueue_style('mc_bot-style-css', plugins_url('assets/css/style.css', __FILE__), [], '1.0.0');
+    wp_enqueue_style('fke_post-material-icons-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0', [], null);
+    wp_enqueue_style('fke_post-material-icons-rounded', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0', [], null);
+    wp_enqueue_style('fke_post-bootstrap-icons-css', "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css", [], '1.0.0');
+    wp_enqueue_style('fke_post-bootstrap-css', plugins_url('assets/css/bootstrap.min.css', __FILE__), [], '1.0.0');
+    wp_enqueue_style('fke_post-custom-css', plugins_url('assets/css/custom.css', __FILE__), [], '1.0.0');
+    wp_enqueue_style('fke_post-style-css', plugins_url('assets/css/style.css', __FILE__), [], '1.0.0');
 
     // Enqueue Scripts
     wp_enqueue_script('jquery');
-    wp_enqueue_script('mc_bot-bootstrap-bundle-js', plugins_url('assets/js/bootstrap.bundle.min.js', __FILE__), ['jquery'], '1.0.0', true);
-    wp_enqueue_script('mc_bot-chart-js', plugins_url('assets/js/chart.js', __FILE__), ['jquery'], '1.0.0', true);
-    wp_enqueue_script('mc_bot-datatables-js', plugins_url('assets/DataTables/datatables.min.js', __FILE__), ['jquery'], '1.0.0', true);
-    wp_enqueue_script('mc_bot-summernote-js', plugins_url('assets/summernote/summernote.js', __FILE__), ['jquery'], '1.0.0', true);
-    wp_enqueue_script('mc_bot-sweetalert-js', plugins_url('assets/js/sweetalert.js', __FILE__), ['jquery'], '1.0.0', true);
-    wp_enqueue_script('mc_bot-script-js', plugins_url('assets/js/script.js', __FILE__), ['jquery'], '1.0.0', true);
+    wp_enqueue_script('fke_post-bootstrap-bundle-js', plugins_url('assets/js/bootstrap.bundle.min.js', __FILE__), ['jquery'], '1.0.0', true);
+    wp_enqueue_script('fke_post-script-js', plugins_url('assets/js/script.js', __FILE__), ['jquery'], '1.0.0', true);
 
     // Pass AJAX URL to scripts
-    wp_localize_script('mc_bot-script-js', 'mc_bot_ajax', [ 'ajax_url' => admin_url('admin-ajax.php') ]);
+    wp_localize_script('fke_post-script-js', 'fke_post_ajax', [ 'ajax_url' => admin_url('admin-ajax.php') ]);
 }
-add_action('wp_enqueue_scripts', 'mc_bot_enqueue_assets');
+add_action('wp_enqueue_scripts', 'fke_post_enqueue_assets');
+
 
 /**
  * Plugin Activation Hook - Creates necessary tables
  */
-function mc_bot_activate()
+function fke_post_activate()
 {
     global $wpdb;
     $charset_collate = $wpdb->get_charset_collate();
 
     $tables = [
-        'mc_bot_chats' => "(
+        'fke_post_chats' => "(
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
             question VARCHAR(250) NOT NULL,
             answer LONGTEXT NOT NULL,
             PRIMARY KEY (id)
         )",
 
-        'mc_bot_chat_terms' => "(
+        'fke_post_chat_terms' => "(
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
             chatid INT NOT NULL,
             tag VARCHAR(50) NOT NULL,
             PRIMARY KEY (id)
         )",
 
-        'mc_bot_chat_history' => "(
+        'fke_post_chat_history' => "(
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
             query VARCHAR(200) NOT NULL,
             gemini_reply LONGTEXT NOT NULL,
@@ -82,7 +77,7 @@ function mc_bot_activate()
             PRIMARY KEY (id)
         )",
 
-        'mc_bot_chat_global_settings' => "(
+        'fke_post_chat_global_settings' => "(
             id BIGINT(20) NOT NULL AUTO_INCREMENT,
             gemini_key VARCHAR(200) NULL,
             contact_us_link VARCHAR(200) NULL,
@@ -103,26 +98,26 @@ function mc_bot_activate()
         }
     }
 }
-register_activation_hook(__FILE__, 'mc_bot_activate');
+register_activation_hook(__FILE__, 'fke_post_activate');
 
 /**
  * Add plugin menu to admin panel
  */
-function mc_bot_activate_pages_register()
+function fke_post_activate_pages_register()
 {
-    $plugin_slug = "mc_bot_admin";
-    add_menu_page('Super Bot', 'Super Bot', 'edit', $plugin_slug, null, plugins_url('icon.png', __FILE__), 58);
-    add_submenu_page($plugin_slug, 'Dashboard', 'Dashboard', 'manage_options', 'chatbot_dashboard', 'dashboard_function');
-    add_submenu_page($plugin_slug, 'Add/Edit Replies', 'Add/Edit Replies', 'manage_options', 'reply_edit_remove', 'reply_function');
-    add_submenu_page($plugin_slug, 'Unreserved Queries', 'Unreserved Queries', 'manage_options', 'unreserved_queries', 'unreserved_query_function');
-    add_submenu_page($plugin_slug, 'Settings', 'Settings', 'manage_options', 'chat_global_settings', 'chat_global_settings_function');
+    $plugin_slug = "fke_post_admin";
+    add_menu_page('Fake Posts', 'Fake Posts', 'edit', $plugin_slug, null, plugins_url('icon.png', __FILE__), 58);
+    add_submenu_page($plugin_slug, 'Dashboard', 'Dashboard', 'manage_options', 'fke_posts_dashboard', 'fke_posts_dashboard_function');
+    add_submenu_page($plugin_slug, 'Generate Posts', 'Generate Posts', 'manage_options', 'fke_posts_generate_post', 'fke_posts_generate_post_function');
+    add_submenu_page($plugin_slug, 'Remove Posts', 'Remove Posts', 'manage_options', 'fke_posts_remove_post', 'fke_posts_remove_post_function');
 }
-add_action('admin_menu', 'mc_bot_activate_pages_register');
+add_action('admin_menu', 'fke_post_activate_pages_register');
 
 /**
  * Include Admin Pages
  */
-function dashboard_function() { require plugin_dir_path(__FILE__) . 'admin/dashboard.php'; }
-function reply_function() { require plugin_dir_path(__FILE__) . 'admin/replies.php'; }
-function unreserved_query_function() { require plugin_dir_path(__FILE__) . 'admin/unreserved.php'; }
-function chat_global_settings_function() { require plugin_dir_path(__FILE__) . 'settings.php'; }
+function fke_posts_dashboard_function() { require plugin_dir_path(__FILE__) . 'admin/dashboard.php'; }
+function fke_posts_generate_post_function() { require plugin_dir_path(__FILE__) . 'admin/generate.php'; }
+function fke_posts_remove_post_function() { require plugin_dir_path(__FILE__) . 'admin/removal.php'; }
+
+?>
